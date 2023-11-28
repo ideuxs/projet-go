@@ -22,15 +22,10 @@ public class Ihm {
             commande = sc.nextLine();
             mots = commande.split("\\s+");
             if(mots[0].equals("boardsize")){
-                if(mots.length == 2){
+                if(mots.length == 2) {
                     int taille = Integer.parseInt(mots[1]);
                     boolean check = t.boardSize(taille);
                     System.out.println("=\n");
-                    if (!check){
-                        System.out.println("Dimensions incorrectes ou dimensions déjà saisies");
-                    }
-                }else{
-                    System.out.println("Argument manquant");
                 }
             }else if(mots[0].equals("showboard")){
                 System.out.println("=\n");
@@ -40,11 +35,6 @@ public class Ihm {
                     String name = mots[1];
                     String param1 = mots[2];
                     boolean check = t.placerPion(name, param1);
-                    if(!check){
-                        System.out.println("Argument manquant ou incorrect ou encore place déjà occupée.");
-                    }
-                }else {
-                    System.out.println("Argument manquant");
                 }
             } else if(mots[0].equals("quit")){
                 exit(0);

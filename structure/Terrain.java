@@ -9,12 +9,15 @@ import java.util.Scanner;
 public class Terrain {
 
     private int dimension;
+
+    private boolean start;
     private String[][] terrain;
     private char[] alphabet;
     private Joueur[] joueurs;
 
     public Terrain() {
-
+        dimension = 19;
+        boardSize(dimension);
     }
 
     public void ajouterJoueur(Joueur j, Joueur j2){
@@ -24,14 +27,14 @@ public class Terrain {
     }
 
     public boolean boardSize(int dim){
-        if (!(dim > 1 && dim <= 20)) {
+        if (!(dim > 4 && dim <= 19)) {
             return false;
         }
-        if (terrain == null){
+        if(!start){
             terrain = new String[dim][dim];
             for(int i = dim - 1; i >= 0; i--){
                 for(int j = dim - 1; j >= 0; j--) {
-                    terrain[i][j] = ".  ";
+                    terrain[i][j] = ". ";
                 }
             }
 
@@ -47,12 +50,13 @@ public class Terrain {
         return false;
     }
 
+
+
     public void showBoard(){
-        assert(terrain != null);
         int tmp = dimension;
-        System.out.print(" ");
+        System.out.print("  ");
         for (Character a : alphabet) {
-            System.out.print("  " +a);
+            System.out.print(" " +a);
         }
         System.out.println();
         for(int i = dimension -1 ; i >= 0; i--){
@@ -64,15 +68,27 @@ public class Terrain {
             for(int j = 0; j < dimension; j++) {
                 System.out.print(terrain[i][j]) ;
             }
-            System.out.println(tmp);
+            System.out.print(tmp);
+            if(i==2){
+                System.out.print("         WHITE (O) has captured " + joueurs[0].getNbPoints() +" stones");
+            } if(i==1){
+                System.out.println("         BLACK (X) has captured " + joueurs[1].getNbPoints() +" stones");
+            }
+            else{
+                System.out.println();
+            }
+
             tmp--;
         }
-        System.out.print(" ");
+        System.out.print("  ");
         for (Character a : alphabet) {
-            System.out.print("  " +a);
+            System.out.print(" " +a);
         }
         System.out.println();
     }
+
+
+
 
     /*
     *  Retourne l'indice du caractère saisi
@@ -125,6 +141,7 @@ public class Terrain {
      * par joueur successivement
      */
     public boolean placerPion(String name, String chaine){
+        start = true;
         Joueur j = getJoueur(name);
         char ch = chaine.charAt(0);
         if(Character.isUpperCase(ch) && chaine.length() >1){
@@ -135,7 +152,6 @@ public class Terrain {
                 j.placerPoint(terrain, a, ab);
                 recupererPion();
             }
-            showBoard();
         }else{
             return false;
         }

@@ -13,6 +13,9 @@ public class Joueur {
 
         this.c = couleur.equals("blanc") ? "O" : "X";
     }
+    public int getNbPoints(){
+        return this.nbPoints;
+    }
 
     public void setaPasser(){
         this.aPasser = true;
