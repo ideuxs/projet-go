@@ -11,7 +11,7 @@ public class Joueur {
         nbPoints = 0;
         this.couleur = couleur;
 
-        this.c = couleur.equals("blanc") ? "O" : "X";
+        this.c = couleur.equals("white") ? "O" : "X";
     }
     public int getNbPoints(){
         return this.nbPoints;
@@ -27,25 +27,16 @@ public class Joueur {
 
     public void placerPoint(String[][] t, int i, int j){
         assert(t != null);
-        t[i][j] = c + "  ";
-    }
-    private boolean verifPlacement(String[][] t, int i, int j){
-        if(t[i-1][j] == null){
-            return false;
-        } else if (t[i][j-1]==null) {
-            return false;
-        } else if (t[i+1][j] == null) {
-            return false;
-        } else if (t[i][j+1] == null) {
-            return false;
-        }
-        return true;
+        if(peutPlacer(t,i,j))
+            t[i][j] = c;
+        else
+            System.out.println("pion adverse deja present");
     }
     public void nePassePlus(){
         this.aPasser = false;
     }
     public void quite(){
-        String couleur = (this.couleur.equals("O") ? "blanc" : "noir");
+        String couleur = (this.couleur.equals("O") ? "white" : "black");
         System.out.println("Abandon de la partie du joueur " + couleur);
         System.exit(0);
     }
@@ -62,6 +53,8 @@ public class Joueur {
         return aPasser;
     }
 
-
+    public boolean peutPlacer(String[][] t, int i, int j){
+        return t[i-1][j] =="." || t[i][j-1] =="." || t[i+1][j] =="." || t[i][j+1] ==".";
+    }
 
 }
