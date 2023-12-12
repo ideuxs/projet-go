@@ -1,7 +1,7 @@
-Jeu de GO
+**Jeu de GO**
 
-Sprint 1 à faire :
-  boardsize, showboard, quit
+_Sprint 1 à faire :
+  boardsize, showboard, quit_
 
 Sprint 1 remarque :
   - Accepter ID numero de commande. Exemple: 1 quit
@@ -10,9 +10,8 @@ Sprint 1 remarque :
   - Les messages d'erreur devrait etre standard donc en anglais 
   - Enlever la colone I ou L(verifier).
 
-Sprint 2 à faire : 
-  capturer, jouer
+_Sprint 2 à faire : 
+  capturer, jouer_
 
 Sprint 2 remarque :
-  -                      
-
+  -        
