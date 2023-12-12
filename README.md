@@ -1,4 +1,4 @@
-#projet-go
+Jeu de GO
 
 Sprint 1 à faire : 
   boardsize, showboard, quit
