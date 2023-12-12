@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class Terrain {
 
     private int dimension;
-
     private boolean start;
     private String[][] terrain;
     private char[] alphabet;
@@ -34,10 +33,9 @@ public class Terrain {
             terrain = new String[dim][dim];
             for(int i = dim - 1; i >= 0; i--){
                 for(int j = dim - 1; j >= 0; j--) {
-                    terrain[i][j] = ". ";
+                    terrain[i][j] = ".";
                 }
             }
-
             dimension = dim;
             alphabet = new char[dimension];
             int tmp =0;
@@ -66,7 +64,7 @@ public class Terrain {
                 System.out.print(tmp + "  ");
 
             for(int j = 0; j < dimension; j++) {
-                System.out.print(terrain[i][j]) ;
+                System.out.print(terrain[i][j] + " ") ;
             }
             System.out.print(tmp);
             if(i==2){
@@ -91,10 +89,10 @@ public class Terrain {
 
 
     /*
-    *  Retourne l'indice du caractère saisi
-    *  par un des 2 joueurs, par exemple F3
-    *  elle retournera 6 - 1 (car l'indice commence à 0)
-    */
+     *  Retourne l'indice du caractère saisi
+     *  par un des 2 joueurs, par exemple F3
+     *  elle retournera 6 - 1 (car l'indice commence à 0)
+     */
     private int getIndice(char s){
         for (int i = 0; i < alphabet.length; i++) {
             if(alphabet[i] == s){
@@ -114,17 +112,17 @@ public class Terrain {
     }
 
     /*
-    * Verifier si les cases voisines entourent un pion
-    * Puis verifier si un groupe entoure un pion
-    * */
+     * Verifier si les cases voisines entourent un pion
+     * Puis verifier si un groupe entoure un pion
+     * */
     private boolean estEntourer(int i, int j, String couleur){
 
         return false;
     }
 
     /*Savoir si un pion est dans une bordure
-    * afin de faciliter son
-    */
+     * afin de faciliter son
+     */
     private boolean estDansBordure(int i, int j){
         int taille_min = 0;
         if(i-1 < taille_min && j-1 < taille_min){return true;} //en bas a gauche
@@ -146,7 +144,14 @@ public class Terrain {
         char ch = chaine.charAt(0);
         if(Character.isUpperCase(ch) && chaine.length() >1){
             int ab = getIndice(ch);  // indices des lignes
-            int a = Character.getNumericValue(chaine.charAt(1))-1 ;  // indices des colonnes
+
+            int a = 0;
+            if(chaine.length() >2){
+                String sousChaine = chaine.substring(1, chaine.length());
+                a = Integer.parseInt(sousChaine)-1;
+            }else{
+                a = Character.getNumericValue(chaine.charAt(1))-1 ;  // indices des colonnes
+            }
             boolean check = estOccupee(a,ab);
             if(!check) {
                 j.placerPoint(terrain, a, ab);
@@ -164,18 +169,20 @@ public class Terrain {
     }
 
     /* Récuperer pion qui n'est pas en bordure de grille
-    *  et si le pion est en bordure alors appel de la méthode
-    *  recupererPionBordure()
-    * */
+     *  et si le pion est en bordure alors appel de la méthode
+     *  recupererPionBordure()
+     * */
     public void recupererPion(){
         for (int i =0; i < dimension - 1; ++i){
             for (int j = 0; j < dimension-1; j++) {
                 if(!estDansBordure(i,j)){
                     for (Joueur player: joueurs) {
-                        if (terrain[i][j].equals(player.getChar()+ "  ")) {
-                            if(!terrain[i-1][j].equals(player.getChar()+ "  ") && !terrain[i][j-1].equals(player.getChar()+ "  ") &&!terrain[i-1][j].equals(".  ") && !terrain[i][j-1].equals(".  "))
-                                if(!terrain[i+1][j].equals(".  ") && !terrain[i][j+1].equals(".  ") && !terrain[i-1][j].equals(player.getChar()+ "  ") && !terrain[i][j-1].equals(player.getChar()+ "  ")) {
-                                    terrain[i][j] = ".  ";
+                        if (terrain[i][j].equals(player.getChar())) {
+                            if(!terrain[i-1][j].equals(player.getChar()) && !terrain[i][j-1].equals(player.getChar()) &&!terrain[i-1][j].equals(".") && !terrain[i][j-1].equals("."))
+                                if(!terrain[i+1][j].equals(".") && !terrain[i][j+1].equals(".") && !terrain[i-1][j].equals(player.getChar()) && !terrain[i][j-1].equals(player.getChar())) {
+                                    terrain[i][j] = ".";
+
+                                    //mettre dans le tableau de boolean les coordonnees du pion qui ont ete retiré
                                     System.out.println("Pion retiré");
                                     ajoutPoints(player.getCouleur());
                                 }
@@ -205,14 +212,14 @@ public class Terrain {
 
 
     private boolean estOccupee(int i, int j){
-        return !(terrain[i][j].equals(".  "));
+        return !(terrain[i][j].equals("."));
     }
 
 
     /*
-    * Si les deux joueurs abandonnent successivement
-    * alors il y'a fin de partie.
-    */
+     * Si les deux joueurs abandonnent successivement
+     * alors il y'a fin de partie.
+     */
     public boolean partieFinie(){
         return joueurs[0].getaPasser() && joueurs[1].getaPasser();
     }
