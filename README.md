@@ -1,6 +1,6 @@
 Jeu de GO
 
-Sprint 1 à faire : 
+Sprint 1 à faire :
   boardsize, showboard, quit
 
 Sprint 1 remarque :
@@ -10,9 +10,9 @@ Sprint 1 remarque :
   - Les messages d'erreur devrait etre standard donc en anglais 
   - Enlever la colone I ou L(verifier).
 
-Sprint 2 à faire :
+Sprint 2 à faire : 
   capturer, jouer
 
 Sprint 2 remarque :
-  -
+  -                      
 
