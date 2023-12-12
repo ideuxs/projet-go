@@ -14,4 +14,10 @@ _Sprint 2 à faire :
   capturer, jouer_
 
 Sprint 2 remarque :
-  -        
+  - méthode **_liberties_** pour le nombre de liberte d'une case --> récursive qui prend une case en paramètre
+  - méthode **_record_** --> "struct en C"
+
+ _Sprint 3 à faire (noté):_
+  _player white human
+   player black random_
+   pas de suicide, pas de ko
