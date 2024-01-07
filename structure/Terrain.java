@@ -3,20 +3,28 @@ package structure;
 import joueur.Joueur;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Terrain {
 
     private int dimension;
     private boolean start;
     private String[][] terrain;
+    private boolean[][] copieterrain;
     private char[] alphabet;
     private Joueur[] joueurs;
+    private HashSet<Coord> visitees;
+    public record Coord(int x, int y){};
+
+    private int cpt;
 
     public Terrain() {
         dimension = 19;
         boardSize(dimension);
+
+        visitees = new HashSet<>();
+        cpt =0;
     }
 
     public void ajouterJoueur(Joueur j, Joueur j2){
@@ -38,6 +46,7 @@ public class Terrain {
             }
             dimension = dim;
             alphabet = new char[dimension];
+            copieterrain = new boolean[dimension][dimension];
             int tmp =0;
             for (char a = 'A'; tmp < dim; a++) {
                 alphabet[tmp] = a;
@@ -68,9 +77,9 @@ public class Terrain {
             }
             System.out.print(tmp);
             if(i==2){
-                System.out.print("         WHITE (O) has captured " + joueurs[0].getNbPoints() +" stones");
+                System.out.print("         BLACK (X) has captured " + joueurs[0].getNbPoints() +" stones");
             } if(i==1){
-                System.out.println("         BLACK (X) has captured " + joueurs[1].getNbPoints() +" stones");
+                System.out.println("         WHITE (O) has captured " + joueurs[1].getNbPoints() +" stones");
             }
             else{
                 System.out.println();
@@ -144,7 +153,6 @@ public class Terrain {
         char ch = chaine.charAt(0);
         if(Character.isUpperCase(ch) && chaine.length() >1){
             int ab = getIndice(ch);  // indices des lignes
-
             int a = 0;
             if(chaine.length() >2){
                 String sousChaine = chaine.substring(1, chaine.length());
@@ -155,7 +163,7 @@ public class Terrain {
             boolean check = estOccupee(a,ab);
             if(!check) {
                 j.placerPoint(terrain, a, ab);
-                recupererPion();
+                recupererPion(j);
             }
         }else{
             return false;
@@ -172,49 +180,96 @@ public class Terrain {
      *  et si le pion est en bordure alors appel de la méthode
      *  recupererPionBordure()
      * */
-    public void recupererPion(){
-        for (int i =0; i < dimension - 1; ++i){
-            for (int j = 0; j < dimension-1; j++) {
-                if(!estDansBordure(i,j)){
-                    for (Joueur player: joueurs) {
-                        if (terrain[i][j].equals(player.getChar())) {
-                            if(!terrain[i-1][j].equals(player.getChar()) && !terrain[i][j-1].equals(player.getChar()) &&!terrain[i-1][j].equals(".") && !terrain[i][j-1].equals("."))
-                                if(!terrain[i+1][j].equals(".") && !terrain[i][j+1].equals(".") && !terrain[i-1][j].equals(player.getChar()) && !terrain[i][j-1].equals(player.getChar())) {
-                                    terrain[i][j] = ".";
+    public int recupererPion(Joueur joueur) {
+        ArrayList<Coord> blackEntouree = new ArrayList<>();
+        ArrayList<Coord> whiteEntouree = new ArrayList<>();
 
-                                    //mettre dans le tableau de boolean les coordonnees du pion qui ont ete retiré
-                                    System.out.println("Pion retiré");
-                                    ajoutPoints(player.getCouleur());
-                                }
-
-
-                        }
-                    }
-                }
-                else {
-                    recupererPionBordure();
-                }
-            }
-        }
-
-    }
-
-
-    private void recupererPionBordure() {
+        // Step 1: Count liberties without removing stones
+        int[][] libertiesCount = new int[dimension][dimension];
         for (int i = 0; i < dimension; ++i) {
             for (int j = 0; j < dimension; j++) {
-
+                libertiesCount[i][j] = countLiberties(terrain, i, j);
             }
         }
+        // Step 2: Remove surrounded stones and update player points
+        for (int i = 0; i < dimension; ++i) {
+            for (int j = 0; j < dimension; j++) {
+                if (libertiesCount[i][j] == 0) {
+                    if (terrain[i][j].equals("O")) {
+                        whiteEntouree.add(new Coord(i, j));
+                    } else if (terrain[i][j].equals("X")) {
+                        blackEntouree.add(new Coord(i, j));
+                    }
+
+                    terrain[i][j] = ".";
+                    System.out.println("Pion retiré");
+                    //ajoutPoints(joueur.getCouleur());
+                }
+            }
+        }
+        // Adjust points based on surrounded stones
+        if (joueur.getCouleur().equals("black")) {
+            for (Coord c : whiteEntouree) {
+                joueur.ajouterPoint();
+            }
+        } else if (joueur.getCouleur().equals("white")) {
+            for (Coord c : blackEntouree) {
+                joueur.ajouterPoint();
+            }
+        }
+        return 0;
     }
 
-//|| j-1 < size_min || i+1 > dimension-1 || j+1 > dimension-1 || i-1 < size_min && j-1 < size_min || i+1 > dimension-1 && j+1 > dimension-1){
+    public static int countLiberties(String[][] board, int row, int col) {
+        Set<String> visited = new HashSet<>();
+        return countLibertiesRecursive(board, row, col, board[row][col], visited);
+    }
+
+    private static int countLibertiesRecursive(String[][] board, int row, int col, String group, Set<String> visited) {
+        if (row < 0 || row >= board.length || col < 0 || col >= board[0].length || visited.contains(row + "," + col)) {
+            return 0;
+        }
+
+        visited.add(row + "," + col);
+        if (board[row][col].equals(".")) {
+            return 1;
+        }
+        if (!board[row][col].equals(group)) {
+            return 0;
+        }
+        int liberties = 0;
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        for (int[] direction : directions) {
+            int newRow = row + direction[0];
+            int newCol = col + direction[1];
+            liberties += countLibertiesRecursive(board, newRow, newCol, group, visited);
+        }
+        return liberties;
+    }
+    public int compteCaseVides(int i, int j){
+       return compteCaseVoisines(i,j,".");
+    }
+
+    public int compteCaseVoisines(int i, int j, String s){
+        int compteur = 0;
+        if(terrain[i-1][j].equals(s)){
+            compteur +=1;
+        }
+        if(terrain[i+1][j].equals(s)){
+            compteur +=1;
+        }
+        if(terrain[i][j+1].equals(s)){
+            compteur +=1;
+        }if(terrain[i][j-1].equals(s)){
+            compteur +=1;
+        }
+        return compteur;
+    }
 
 
     private boolean estOccupee(int i, int j){
         return !(terrain[i][j].equals("."));
     }
-
 
     /*
      * Si les deux joueurs abandonnent successivement
@@ -224,6 +279,7 @@ public class Terrain {
         return joueurs[0].getaPasser() && joueurs[1].getaPasser();
     }
 
+    public void auTourDe(){
 
-
+    }
 }
