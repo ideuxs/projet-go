@@ -1,60 +1,50 @@
 package structure;
 
 import joueur.Joueur;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Terrain {
-
     private int dimension;
     private boolean start;
     private String[][] terrain;
-    private boolean[][] copieterrain;
     private char[] alphabet;
     private Joueur[] joueurs;
-    private HashSet<Coord> visitees;
-    public record Coord(int x, int y){};
-
-    private int cpt;
+    public record Coord(int x, int y) {}
 
     public Terrain() {
         dimension = 19;
-        boardSize(dimension);
-
-        visitees = new HashSet<>();
-        cpt =0;
+        initialiserTerrain(dimension); // Initialisation initiale du terrain
     }
 
-    public void ajouterJoueur(Joueur j, Joueur j2){
+    public void ajouterJoueur(Joueur j, Joueur j2) {
         joueurs = new Joueur[2];
         joueurs[0] = j;
         joueurs[1] = j2;
     }
 
-    public boolean boardSize(int dim){
+    public boolean boardSize(int dim) {
         if (!(dim > 4 && dim <= 19)) {
             return false;
         }
-        if(!start){
-            terrain = new String[dim][dim];
-            for(int i = dim - 1; i >= 0; i--){
-                for(int j = dim - 1; j >= 0; j--) {
-                    terrain[i][j] = ".";
-                }
+        initialiserTerrain(dim); // Réinitialisation du terrain avec la nouvelle dimension
+        return true;
+    }
+
+    private void initialiserTerrain(int dim) {
+        terrain = new String[dim][dim];
+        for (int i = dim - 1; i >= 0; i--) {
+            for (int j = dim - 1; j >= 0; j--) {
+                terrain[i][j] = ".";
             }
-            dimension = dim;
-            alphabet = new char[dimension];
-            copieterrain = new boolean[dimension][dimension];
-            int tmp =0;
-            for (char a = 'A'; tmp < dim; a++) {
-                alphabet[tmp] = a;
-                ++tmp;
-            }
-            return true;
         }
-        return false;
+        dimension = dim;
+        alphabet = new char[dimension];
+        for (int i = 0; i < dimension; i++) {
+            alphabet[i] = (char)('A' + i);
+        }
+        start = true; // Indique que le terrain a été initialisé
     }
 
 
@@ -147,30 +137,21 @@ public class Terrain {
     /* Placement des pions dans la grille
      * par joueur successivement
      */
-    public boolean placerPion(String name, String chaine){
-        start = true;
+    public boolean placerPion(String name, String chaine) {
         Joueur j = getJoueur(name);
         char ch = chaine.charAt(0);
-        if(Character.isUpperCase(ch) && chaine.length() >1){
-            int ab = getIndice(ch);  // indices des lignes
-            int a = 0;
-            if(chaine.length() >2){
-                String sousChaine = chaine.substring(1, chaine.length());
-                a = Integer.parseInt(sousChaine)-1;
-            }else{
-                a = Character.getNumericValue(chaine.charAt(1))-1 ;  // indices des colonnes
-            }
-            boolean check = estOccupee(a,ab);
-            if(!check) {
+        if (Character.isUpperCase(ch) && chaine.length() > 1) {
+            int ab = getIndice(ch); // indices des lignes
+            int a = chaine.length() > 2 ? Integer.parseInt(chaine.substring(1)) - 1
+                    : Character.getNumericValue(chaine.charAt(1)) - 1; // indices des colonnes
+            if (!estOccupee(a, ab)) {
                 j.placerPoint(terrain, a, ab);
                 recupererPion(j);
+                return true;
             }
-        }else{
-            return false;
         }
-        return true;
+        return false;
     }
-
     private void ajoutPoints(String couleur){
         if(couleur.equals(joueurs[0].getCouleur())){ joueurs[0].ajouterPoint(); }
         else{ joueurs[1].ajouterPoint(); }
@@ -247,7 +228,7 @@ public class Terrain {
         return liberties;
     }
     public int compteCaseVides(int i, int j){
-       return compteCaseVoisines(i,j,".");
+        return compteCaseVoisines(i,j,".");
     }
 
     public int compteCaseVoisines(int i, int j, String s){
@@ -267,7 +248,7 @@ public class Terrain {
     }
 
 
-    private boolean estOccupee(int i, int j){
+    public boolean estOccupee(int i, int j) {
         return !(terrain[i][j].equals("."));
     }
 
@@ -275,11 +256,16 @@ public class Terrain {
      * Si les deux joueurs abandonnent successivement
      * alors il y'a fin de partie.
      */
-    public boolean partieFinie(){
+    public char[] getAlphabet() {
+        return alphabet;
+    }
+
+    public boolean partieFinie() {
         return joueurs[0].getaPasser() && joueurs[1].getaPasser();
     }
 
-    public void auTourDe(){
-
+    public int getDimension() {
+        return dimension;
     }
+
 }
