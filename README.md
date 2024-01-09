@@ -18,6 +18,6 @@ Sprint 2 remarque :
   - méthode **_record_** --> "struct en C"
 
  _Sprint 3 à faire (noté):_
-  _player white human
-   player black random_
+  _player white human,
+   player black random,_
    pas de suicide, pas de ko
