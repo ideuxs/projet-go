@@ -4,4 +4,6 @@ import structure.Terrain;
 
 public interface IJoueur {
     boolean play(String move, Terrain terrain);
+
+    boolean estRandomJoueur();
 }

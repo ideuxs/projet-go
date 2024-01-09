@@ -11,9 +11,12 @@ public class Terrain {
     private String[][] terrain;
     private char[] alphabet;
     private Joueur[] joueurs;
+
+    private ArrayList<Coord> estDisponible;
     public record Coord(int x, int y) {}
 
     public Terrain() {
+        estDisponible = new ArrayList<>();
         dimension = 19;
         initialiserTerrain(dimension); // Initialisation initiale du terrain
     }
@@ -101,7 +104,7 @@ public class Terrain {
         return -1;
     }
 
-    private Joueur getJoueur(String s){
+    public Joueur getJoueur(String s){
         for(Joueur j : joueurs){
             if(j.getCouleur().equals(s)){
                 return j;
@@ -134,24 +137,47 @@ public class Terrain {
         return j + 1 > dimension;
     }
 
+    public boolean peutPoser(int i, int j){
+        for (Coord c:estDisponible) {
+            if (c.x == i && c.y == j){
+                System.out.println("N'a pas le droit de poser ici");
+                return false;
+            }
+        }
+        return true;
+    }
+
     /* Placement des pions dans la grille
      * par joueur successivement
      */
     public boolean placerPion(String name, String chaine) {
         Joueur j = getJoueur(name);
+        Joueur jPasSonTour = getJoueurPasSonTour(j);
         char ch = chaine.charAt(0);
         if (Character.isUpperCase(ch) && chaine.length() > 1) {
             int ab = getIndice(ch); // indices des lignes
             int a = chaine.length() > 2 ? Integer.parseInt(chaine.substring(1)) - 1
                     : Character.getNumericValue(chaine.charAt(1)) - 1; // indices des colonnes
-            if (!estOccupee(a, ab)) {
-                j.placerPoint(terrain, a, ab);
-                recupererPion(j);
-                return true;
+            if (!estOccupee(a, ab) && peutPoser(a,ab)) {
+                if(countLiberties(terrain,a,ab)!=0){
+                    j.placerPoint(terrain, a, ab, jPasSonTour);
+                    recupererPion(j);
+                    return true;
+                }
+
             }
         }
         return false;
     }
+
+    private Joueur getJoueurPasSonTour(Joueur j) {
+        if(joueurs[0].getCouleur().equals(j.getCouleur())){
+            return joueurs[1];
+        }
+
+        return joueurs[0];
+    }
+
     private void ajoutPoints(String couleur){
         if(couleur.equals(joueurs[0].getCouleur())){ joueurs[0].ajouterPoint(); }
         else{ joueurs[1].ajouterPoint(); }
@@ -183,6 +209,7 @@ public class Terrain {
                     }
 
                     terrain[i][j] = ".";
+                    estDisponible.add(new Coord(i,j));
                     System.out.println("Pion retiré");
                     //ajoutPoints(joueur.getCouleur());
                 }
@@ -267,5 +294,21 @@ public class Terrain {
     public int getDimension() {
         return dimension;
     }
+
+    public boolean peutEncoreJouer(String couleur) {
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                if (!estOccupee(i, j) && !estDansListeEstDisponible(i, j) && countLiberties(terrain, i, j) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean estDansListeEstDisponible(int i, int j) {
+        return estDisponible.contains(new Coord(i, j));
+    }
+
 
 }

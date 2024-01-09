@@ -1,10 +1,12 @@
 package joueur;
 
-import appli.IJoueur;
-import structure.Terrain;
+        import appli.IJoueur;
+        import structure.Terrain;
 
 
 public class Joueur {
+
+    private boolean peutJouer;
     private boolean aPasser;
     private int nbPoints;
     private String c;
@@ -13,6 +15,7 @@ public class Joueur {
 
     // Modification du constructeur pour inclure PlayerInterface
     public Joueur(String couleur, IJoueur player) {
+        this.peutJouer = couleur.equals("black");
         this.aPasser = false;
         this.nbPoints = 0;
         this.couleur = couleur;
@@ -36,14 +39,27 @@ public class Joueur {
         return this.couleur;
     }
 
-    public void placerPoint(String[][] t, int i, int j) {
+    public void placerPoint(String[][] t, int i, int j, Joueur joueur) {
         assert(t != null);
         if (peutPlacer(t, i, j)) {
-            t[i][j] = c; // Place le pion si la position est libre
+            if(this.peutJouer){
+                joueur.setPeutJouer();
+                this.peutJouer = false;
+                t[i][j] = c; // Place le pion si la position est libre
+            } else {
+                System.out.println("pas à ton tour");
+            }
+
         } else {
             System.out.println("pion adverse deja present");
         }
     }
+
+    public void setPeutJouer(){
+        this.peutJouer = true;
+    }
+
+
     public void nePassePlus(){
         this.aPasser = false;
     }
@@ -68,6 +84,14 @@ public class Joueur {
     public boolean peutPlacer(String[][] t, int i, int j) {
         // Vérifie si la position ciblée est dans les limites du plateau et est libre
         return i >= 0 && i < t.length && j >= 0 && j < t[i].length && t[i][j].equals(".");
+    }
+
+    public IJoueur getIplayer(){
+        return this.player;
+    }
+
+    public boolean getPeutJouer(){
+        return this.peutJouer;
     }
 
 }

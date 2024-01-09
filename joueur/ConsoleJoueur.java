@@ -14,4 +14,9 @@ public class ConsoleJoueur implements IJoueur {
     public boolean play(String move, Terrain terrain) {
         return terrain.placerPion(couleur, move);
     }
+
+    @Override
+    public boolean estRandomJoueur() {
+        return false;
+    }
 }
