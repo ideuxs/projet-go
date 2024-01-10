@@ -12,6 +12,9 @@ public class Ihm {
     private Joueur joueur2;
     private IJoueur joueurActuel;
 
+    private boolean joueur1Configuré = false;
+    private boolean joueur2Configuré = false;
+
     public Ihm(Terrain terrain) {
         this.terrain = terrain;
         // Par défaut, initialise les joueurs comme des ConsolePlayer
@@ -38,6 +41,18 @@ public class Ihm {
             throw new IllegalArgumentException("Couleur de joueur non reconnue");
         }
 
+        // Mettre à jour les indicateurs de configuration
+        if (couleur.equals("black")) {
+            joueur1Configuré = true;
+        } else if (couleur.equals("white")) {
+            joueur2Configuré = true;
+        }
+
+        // Après la configuration des deux joueurs, définir le joueur actuel
+        if (joueur1Configuré && joueur2Configuré) {
+            joueurActuel = joueur1.getIplayer();
+        }
+
         terrain.ajouterJoueur(joueur1, joueur2);
     }
 
@@ -47,6 +62,15 @@ public class Ihm {
         String[] mots;
 
         while (!terrain.partieFinie()) {
+
+            if (!joueur1Configuré || !joueur2Configuré) {
+                commande = sc.nextLine();
+                mots = commande.split("\\s+");
+                if (mots[0].equals("player") && mots.length == 3) {
+                    configurerJoueur(mots[1], mots[2]);
+                }
+                continue; // Retourner au début de la boucle
+            }
 
             if (joueurActuel.estRandomJoueur()) {
                 // Jouer automatiquement pour RandomJoueur
@@ -101,7 +125,7 @@ public class Ihm {
                 break;
             }
         }
-}
+    }
 
     private void changerJoueurActuel() {
         if(joueurActuel == joueur1.getIplayer()){

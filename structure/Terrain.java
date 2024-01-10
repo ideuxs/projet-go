@@ -140,7 +140,7 @@ public class Terrain {
     public boolean peutPoser(int i, int j){
         for (Coord c:estDisponible) {
             if (c.x == i && c.y == j){
-                System.out.println("N'a pas le droit de poser ici");
+
                 return false;
             }
         }
