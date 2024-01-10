@@ -63,16 +63,18 @@ public class Ihm {
 
         while (!terrain.partieFinie()) {
 
-            if (!joueur1Configuré || !joueur2Configuré) {
-                commande = sc.nextLine();
-                mots = commande.split("\\s+");
-                if (mots[0].equals("player") && mots.length == 3) {
-                    configurerJoueur(mots[1], mots[2]);
-                }
-                continue; // Retourner au début de la boucle
-            }
+
 
             if (joueurActuel.estRandomJoueur()) {
+                if (!joueur1Configuré || !joueur2Configuré) {
+                    commande = sc.nextLine();
+                    mots = commande.split("\\s+");
+                    if (mots[0].equals("player") && mots.length == 3) {
+                        configurerJoueur(mots[1], mots[2]);
+                    }
+                    continue; // Retourner au début de la boucle
+                }
+
                 // Jouer automatiquement pour RandomJoueur
                 joueurActuel.play(null, terrain);
                 changerJoueurActuel();
