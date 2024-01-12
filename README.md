@@ -43,3 +43,4 @@ Les fonctionnalitées/commandes opérationnelles :
 
 A noter que nous aurions pu optimiser le code mais faute de temps nous nous avons privilégiés le rendu à temps plutôt que de rendre vraiment en retard.
 
+[Jeu de GO - Diagramme  (2).pdf](https://github.com/ideuxs/projet-go/files/13921553/Jeu.de.GO.-.Diagramme.2.pdf)
