@@ -29,3 +29,16 @@ Sprint 2 remarque :
    
 Le projet "Go" vise à développer un programme permettant à deux joueurs, qu'ils soient humains ou des programmes, de s'affronter dans une partie de Go.L'une des premières étapes de la partie est la définition de la taille du plateau de jeu avec la commande boardsize, suivie de l'affichage du plateau à l'aide de showboard. Lors de l'interaction avec le programme, l'utilisateur peut fournir un numéro de commande facultatif. Ce numéro est tapé par l'utilisateur et n'est pas un prompt. Il sera pris en compte, mémorisé, et utilisé obligatoirement dans la réponse du programme s'il est présent dans la commande.
 
+
+Les fonctionnalitées/commandes opérationnelles : 
+
+ - quit;
+ - boardsize;
+ - showboard;
+ - capturer pion seul/groupe dans les bordures et dans les emplacements "normaux"
+ - interdiction du suicide 
+ - implémentation IJoueur par des classes : ConsoleJoueur, RandomJoueur
+ - possibilité de jouer : console vs console, console vs random, random vs random
+
+A noter que nous aurions pu optimiser le code mais faute de temps nous nous avons privilégiés le rendu à temps plutôt que de rendre vraiment en retard.
+
