@@ -1,12 +1,5 @@
 **Jeu de GO**
 
-Note 11/20
-
-Les prises de pierres ne sont pas correctes
-La paramètre move de la méthode play de random n'est pas utilisé !
-Il y a des entrees sorties en dehors du paquetage ihm comme dans Appli
-
-
 _Sprint 1 à faire :
   boardsize, showboard, quit_
 
